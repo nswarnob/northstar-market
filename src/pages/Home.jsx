@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 export default function Home() {
   return (
     <>
-      <section className="hero">
+      <section className="hero isolate">
         <div className="hero-copy">
-          <p className="eyebrow">THE SUMMER EDIT · 2026</p>
+          <p className="eyebrow text-northstar-orange">THE SUMMER EDIT · 2026</p>
           <h1>
             Objects worth
             <br />
@@ -15,7 +15,7 @@ export default function Home() {
             Everyday essentials with uncommon character—selected for quality,
             utility, and a lighter footprint.
           </p>
-          <Link className="button" to="/products">
+          <Link className="button transition-colors duration-200" to="/products">
             Explore the collection <span>→</span>
           </Link>
         </div>

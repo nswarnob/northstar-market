@@ -5,7 +5,9 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import api from "../services/api";
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "");
+const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "";
+const stripeConfigured = stripeKey.startsWith("pk_test_") && !stripeKey.includes("replace_me");
+const stripePromise = stripeConfigured ? loadStripe(stripeKey) : null;
 
 function PaymentForm({ address, paymentIntentId }) {
   const stripe = useStripe();
@@ -47,6 +49,18 @@ export default function Checkout() {
   }, [readyAddress, items]);
 
   if (!items.length) return <Navigate to="/cart" replace />;
+  if (!stripeConfigured) {
+    return (
+      <section className="page">
+        <div className="alert">
+          Stripe checkout is not configured. Replace
+          {" "}<code>VITE_STRIPE_PUBLISHABLE_KEY</code> in
+          {" "}<code>client/.env</code> with a real Stripe test publishable key,
+          then restart Vite.
+        </div>
+      </section>
+    );
+  }
   const field = (name, label, required = true) => <label>{label}<input required={required} maxLength="120" value={address[name]} onChange={(e) => setAddress({ ...address, [name]: e.target.value })} /></label>;
   return (
     <section className="page checkout">

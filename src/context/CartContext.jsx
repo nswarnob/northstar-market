@@ -5,7 +5,14 @@ const storageKey = "northstar_cart";
 
 function initialCart() {
   try {
-    return JSON.parse(localStorage.getItem(storageKey)) || [];
+    const stored = JSON.parse(localStorage.getItem(storageKey));
+    if (!Array.isArray(stored)) return [];
+    return stored.filter((item) =>
+      item?.product?._id &&
+      Number.isFinite(item.product.price) &&
+      Number.isInteger(item.quantity) &&
+      item.quantity > 0
+    );
   } catch {
     return [];
   }
