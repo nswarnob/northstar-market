@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Auth({ register = false }) {
-  const { login, register: createAccount } = useAuth();
+  const { firebaseConfigured, login, register: createAccount } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [values, setValues] = useState({ name: "", email: "", password: "" });
@@ -27,15 +27,20 @@ export default function Auth({ register = false }) {
         <p className="eyebrow">{register ? "CREATE AN ACCOUNT" : "WELCOME BACK"}</p>
         <h1>{register ? "Join Northstar" : "Sign in"}</h1>
         <p>{register ? "Save favorites, track orders, and review your finds." : "Continue where you left off."}</p>
+        {!firebaseConfigured && (
+          <div className="alert">
+            Firebase Authentication is not configured. Add the
+            {" "}VITE_FIREBASE_* environment variables and restart the client.
+          </div>
+        )}
         {register && <label>Full name<input required minLength="2" maxLength="60" autoComplete="name" value={values.name} onChange={(e) => setValues({ ...values, name: e.target.value })} /></label>}
         <label>Email address<input required type="email" autoComplete="email" value={values.email} onChange={(e) => setValues({ ...values, email: e.target.value })} /></label>
         <label>Password<input required type="password" minLength="8" maxLength="72" autoComplete={register ? "new-password" : "current-password"} value={values.password} onChange={(e) => setValues({ ...values, password: e.target.value })} /></label>
         {register && <small>Use 8+ characters with upper/lowercase and a number.</small>}
         {error && <div className="alert">{error}</div>}
-        <button className="wide" disabled={busy}>{busy ? "Please wait…" : register ? "Create account" : "Sign in"}</button>
+        <button className="wide" disabled={busy || !firebaseConfigured}>{busy ? "Please wait…" : register ? "Create account" : "Sign in"}</button>
         <p className="switch">{register ? "Already a member?" : "New to Northstar?"} <Link to={register ? "/login" : "/register"}>{register ? "Sign in" : "Create an account"}</Link></p>
       </form>
     </section>
   );
 }
-
