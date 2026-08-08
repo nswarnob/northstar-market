@@ -1,9 +1,30 @@
 import { Link } from "react-router-dom";
 
 export default function Home() {
+  const moveHero = (event) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+    event.currentTarget.style.setProperty("--sun-x", `${x * -18}px`);
+    event.currentTarget.style.setProperty("--sun-y", `${y * -14}px`);
+    event.currentTarget.style.setProperty("--arch-x", `${x * 12}px`);
+    event.currentTarget.style.setProperty("--arch-y", `${y * 10}px`);
+  };
+
+  const resetHero = (event) => {
+    event.currentTarget.style.setProperty("--sun-x", "0px");
+    event.currentTarget.style.setProperty("--sun-y", "0px");
+    event.currentTarget.style.setProperty("--arch-x", "0px");
+    event.currentTarget.style.setProperty("--arch-y", "0px");
+  };
+
   return (
     <>
-      <section className="hero isolate">
+      <section
+        className="hero isolate"
+        onPointerMove={moveHero}
+        onPointerLeave={resetHero}
+      >
         <div className="hero-copy">
           <p className="eyebrow text-northstar-orange">THE SUMMER EDIT · 2026</p>
           <h1>
